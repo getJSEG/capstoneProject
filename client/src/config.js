@@ -1,2 +1,0 @@
-const YOUTUBE_API_KEY = 'AIzaSyC72sJ23JHQluiq2lIaO0Q4NsBoyXwUFc4';
-export default YOUTUBE_API_KEY;
