@@ -35,7 +35,13 @@ create a config.js file in the src directory of the front end
  const YOUTUBE_API_KEY = "Repalce with YOUTUBE_API_KEY";
  export default YOUTUBE_API_KEY;
 ```
-## seed-mongodb
+## Seed-mongodb
 ```
 mongoimport --db recipe-test --collection recipes --file <filePath>/recipes.json --jsonarray
+```
+
+## In the client add a new file Name config.js
+```
+const YOUTUBE_API_KEY = 'YOUR_YOUTUBE API_KEY';
+export default YOUTUBE_API_KEY;
 ```

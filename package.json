@@ -29,7 +29,7 @@
     "test": "mocha",
     "start": "concurrently --kill-others \"node ./server/index.js\" \"cd client && npm run start\"",
     "dev": "nodemon ./server/index.js localhost 5000",
-    "install-client": "npm --prefix ./client install"
+    "install-cli": "cd client && npm install && cd .."
   },
   "author": "Elmer Gonzalez",
   "license": "ISC"
