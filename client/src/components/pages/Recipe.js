@@ -32,7 +32,6 @@ class Recipe extends Component {
     const _id = this.props.match.params.id
     getSingleRecipe(_id)
     .then( response => {
-      console.log(response.data.source)
       this.setState({
         title: response.data.label,
         recipeImg: response.data.image,

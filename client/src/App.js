@@ -17,7 +17,7 @@ class App extends Component{
     super(props);
     this.state = {
       authenticated: false,
-      userAvatar: 'http://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png',
+      userAvatar: '',
       error:'',
       message: '',
       displayMessage: false,

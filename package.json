@@ -27,9 +27,11 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "concurrently --kill-others \"node ./server/index.js\" \"cd client && npm run start\"",
-    "dev": "nodemon ./server/index.js localhost 5000",
-    "install-cli": "cd client && npm install && cd ../"
+    "start": "node ./server/index.js",
+    "client": "npm start --prefix client",
+    "server":"nodemon ./server/index.js",
+    "dev": "concurrently --kill-others \"node ./server/index.js\" \"cd client && npm run start\"",
+    "install-client": "npm install --prefix client"
   },
   "author": "Elmer Gonzalez",
   "license": "ISC"

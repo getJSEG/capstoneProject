@@ -28,7 +28,7 @@ create a env. file with the fallowing variable and replace with valid with valid
 ## front-end
 install front-end dependencies
 ```javascript
- npm install-client
+ npm run-script install-cli
 ```
 create a config.js file in the src directory of the front end
 ```javascript
