@@ -13,8 +13,20 @@ const userRoute = require('./src/userRoute.js');
 const recipeRoute = require('./src/recipesRoute.js');
 const MongoStore = require('connect-mongo')(session);
 const User = require('./src/models/users').User;
+const path = require('path')
 const cors = require('cors');
 const app = express();
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+function callbackUrl(provider) {
+  if (app.get("env") === "production") {
+    return `https://best-food-recipes.herokuapp.com/${provider}/return`;
+  } else if (app.get("env") === "development") {
+    return `http://localhost:5000/${provider}/return`
+  }
+}
+
 
 //create or find user
 function generateOrFindUser(accessToken, refreshToken, profile, done) {
@@ -33,7 +45,7 @@ function generateOrFindUser(accessToken, refreshToken, profile, done) {
     const emailError = new Error("Your email privacy settings prevent you from logging in.");
     done(emailError, null);
   }
-}   
+}
 
 //set up cors to allows to accept request from the client
 app.use(
@@ -48,7 +60,7 @@ app.use(
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRETE,
-    callbackURL: 'http://localhost:5000/google/return'
+    callbackURL: callbackUrl('google')
   }, generateOrFindUser)
 );
 
@@ -56,7 +68,7 @@ passport.use(new GoogleStrategy({
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_CLIENT_SECRETE,
-  callbackURL: "http://localhost:5000/facebook/return",
+  callbackURL: callbackUrl('facebook'),
   profileFields: ['id', 'displayName', 'photos', 'email']
 }, generateOrFindUser ));
 
@@ -73,9 +85,7 @@ app.use(cookieParser());
 app.use(bodyParser.text());
 
 //Conntecting to mongoose database
-mongoose.connect("mongodb://localhost:27017/recipe-test", { useNewUrlParser: true })
-.then( () =>  console.log(`database is connected`) )
-.catch( error => console.log(`something went wrong while connecting to Database` ));
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test", { useNewUrlParser: true });
 
 var db = mongoose.connection;
 //session config for passport and mongoDB
@@ -83,9 +93,7 @@ const sessionOptions = {
 	secret: "secrete data",
 	resave: true,
 	saveUninitialized: true,
-  	store: new MongoStore({
-  	  mongooseConnection: db
- 	})
+  	store: new MongoStore({ mongooseConnection: db 	})
 };
 
 app.use(session(sessionOptions));
@@ -98,6 +106,14 @@ app.use(passport.session());
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
+
+// production mode
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+}
+// build mode
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
 //error rout for my app
 app.get('/error', (req, res) => {
