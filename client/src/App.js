@@ -23,7 +23,7 @@ class App extends Component{
       displayMessage: false,
     }
   }
-
+// get the user profile when the component loads
   componentDidMount() {
     userprofile().then( response => {
       if(response.status === 200){

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 axios.defaults.withCredentials = true
 
 //get All Recipes
@@ -29,6 +30,5 @@ export const removeRecipe = (Id) => { return axios.put(`/saved/remove/${Id}`,{ m
 // Youtube API return yourube videos from a sertain keyword
 export const getYoutubeVideos = (keyword) => {
   const encodedKeyWord = encodeURIComponent(keyword);
-  console.log(process.env.YOUTUBE_API_KEY)
-  return axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodedKeyWord}&maxResults=10&type=video&videoEmbeddable=true&key=${process.env.YOUTUBE_API_KEY}`);
+  return axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodedKeyWord}&maxResults=10&type=video&videoEmbeddable=true&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`);
 }
