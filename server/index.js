@@ -47,13 +47,14 @@ function generateOrFindUser(accessToken, refreshToken, profile, done) {
 }
 
 //set up cors to allows to accept request from the client
-// app.use(
-//   cors({
-//     origin: process.env.PORT ||  "http://localhost:3000",
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     credentials: true
-//   })
-// );
+//TODO: GET THE PORT OF THE REACT APP FROM HEROKU
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com' ||  "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
 
 //configure google strategy
 passport.use(new GoogleStrategy({
