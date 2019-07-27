@@ -25,14 +25,14 @@ class App extends Component{
   }
 // get the user profile when the component loads
   componentDidMount() {
-    userprofile().then( response => {
-      if(response.status === 200){
-        this.setState({
-          authenticated: true,
-          userAvatar: response.data.profile.photo
-        });
-      }
-    })
+    // userprofile().then( response => {
+    //   if(response.status === 200){
+    //     this.setState({
+    //       authenticated: true,
+    //       userAvatar: response.data.profile.photo
+    //     });
+    //   }
+    // })
   }
 
   handleAuthentication() {
