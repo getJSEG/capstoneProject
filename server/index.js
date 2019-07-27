@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+require('dotenv').config()
 
 const morgan = require('morgan');
 const express = require('express');
@@ -27,7 +27,6 @@ function callbackUrl(provider) {
   }
 }
 
-
 //create or find user
 function generateOrFindUser(accessToken, refreshToken, profile, done) {
   if (profile.emails) {
@@ -48,13 +47,13 @@ function generateOrFindUser(accessToken, refreshToken, profile, done) {
 }
 
 //set up cors to allows to accept request from the client
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.PORT ||  "http://localhost:3000",
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     credentials: true
+//   })
+// );
 
 //configure google strategy
 passport.use(new GoogleStrategy({
@@ -121,18 +120,15 @@ app.get('/error', (req, res) => {
 });
 
 //404 route for my app this will render the page
-app.use((req, res) => {
-  res.status(404).json({
-    message:"this route could not be found Sorry!!!"
-  });
-});
+app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found" }); });
 
 //send message error to the renderer
 app.use( (err, req, res, next) => {
-  if (statusCode >= 100 && statusCode < 600)
-  res.status(statusCode);
-else
-  res.status(500);
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: {}
+  });
 });
 
 app.listen(app.get('port'), () => {
