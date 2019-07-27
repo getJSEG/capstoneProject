@@ -1,4 +1,4 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
 
 const morgan = require('morgan');
 const express = require('express');
@@ -135,7 +135,7 @@ else
   res.status(500);
 });
 
-const server = app.listen(app.get('port'), () => {
+app.listen(app.get('port'), () => {
   console.log(`express server is listenting on port ${server.address().port} `);
 });
 
