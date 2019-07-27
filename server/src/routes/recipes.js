@@ -24,10 +24,11 @@ function getRecipes(req, res, next) {
         });
       }
     });
-
   }else{
-    var cantHandleRequest = new Error("cant handle your request");
-    return next(cantHandleRequest);
+    res.json({
+      message: `cant handle your request`,
+      status: 400
+    });
   }
 }
 
@@ -49,13 +50,14 @@ function searchQuery(req, res, next) {
         res.status(200).json({ recipes: recipes
         });
       }else{
-        console.log(label)
         res.status(204).json({ recipes: recipes });
       }
     });
   }else{
-    var cantHandleRequest = new Error("cant handle your request");
-    return next(cantHandleRequest);
+    res.json({
+      message: `cant handle your request`,
+      status: 400
+    });
   }
 
 }
@@ -84,8 +86,10 @@ function createRecipe(req, res, next) {
       });
     });
   }else{
-    var cantCreateRecipe = new Error("you must be log in to create a recipe");
-    return next(cantCreateRecipe);
+    res.json({
+      message: `you must be log in to create a recipe`,
+      status: 403
+    });
   }
 }
 
@@ -106,16 +110,19 @@ function updateRecipe(req, res, next) {
             }
         });
       }else{
-        var dontHaveAccess = new Error("you dont have access to make this change");
-        return next(dontHaveAccess);
+        res.json({
+          message: "you dont have access to make this change",
+          status: 403
+        });
       }
     }).catch( (error) => {
-      var dontHaveAccess = new Error("We could not find this recipe");
-      return next(dontHaveAccess);
+        res.json({
+          message: "We could not find this recipe",
+          status: 404
+        });
     })
   }else{
-    var dontHaveAccess = new Error("you must be signed in to make this change");
-    return next(dontHaveAccess);
+    res.json({   message: `you must be log in to create a recipe`, status: 403 });
   }
 }
 
@@ -140,16 +147,13 @@ function deleteRecipe(req, res, next) {
             }
         });
       }else{
-        var dontHaveAccess = new Error("you dont have access to make this change");
-        return next(dontHaveAccess);
+        res.json({ message: "you dont have access to make this change", status: 403 });
       }
     }).catch( (error) => {
-      var dontHaveAccess = new Error("We could not find this recipe");
-      return next(dontHaveAccess);
+      res.json({   message: "We could not find this recipe",   status: 404 });
     })
   }else{
-    var dontHaveAccess = new Error("you must be signed in to make this change");
-    return next(dontHaveAccess);
+      res.json({  message: `you must be log in to create a recipe`, status: 403 });
   }
 }
 
