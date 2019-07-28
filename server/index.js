@@ -105,7 +105,6 @@ app.use(passport.session());
 
 //main routes
 app.use('/', userRoute);
-app.use('/recipes', recipeRoute);
 
 // production mode
 if(process.env.NODE_ENV === 'production') {
@@ -116,9 +115,7 @@ if(process.env.NODE_ENV === 'production') {
 app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html')); })
 
 //error rout for my app
-app.get('/error', (req, res) => {
-  res.json({message: "this is the error route"});
-});
+app.get('/error', (req, res) => { res.json({message: "this is the error route"}); });
 
 //404 route for my app this will render the page
 app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found" }); });
