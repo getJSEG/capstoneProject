@@ -19,31 +19,64 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+//set up cors to allows to accept request from the client
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
+
+function callbackUrl(provider) {
+  if (app.get("env") === "production") {
+    return `https://best-food-recipes.herokuapp.com/${provider}/return`;
+  } else if (app.get("env") === "development") {
+    return `http://localhost:5000/${provider}/return`
+  }
+}
+
+
+//create or find user
+function generateOrFindUser(accessToken, refreshToken, profile, done) {
+  if (profile.emails) {
+    User.findOneAndUpdate(
+      { email: profile.emails[0].value },
+      {
+        name: profile.displayName || profile.username,
+        email: profile.emails[0].value,
+        photo: profile.photos[0].value
+      },
+      { upsert: true, new: true },
+      done
+    );
+  } else {
+    const emailError = new Error("Your email privacy settings prevent you from logging in.");
+    done(emailError, null);
+  }
+}
+
+//configure google strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRETE,
+    callbackURL: callbackUrl('google')
+  }, generateOrFindUser)
+);
+
+//configure Facebook Strategy
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_CLIENT_ID,
+  clientSecret: process.env.FACEBOOK_CLIENT_SECRETE,
+  callbackURL: callbackUrl('facebook'),
+  profileFields: ['id', 'displayName', 'photos', 'email']
+}, generateOrFindUser ));
+
+passport.serializeUser( (user, done) => { done(null, user._id); });
+passport.deserializeUser( (userId, done) =>  User.findById(userId, done));
+
 app.set('port', process.env.PORT || 5000);
 
-//get data as json text
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(bodyParser.text());
-
-mongoose.set("useNewUrlParser", true);
-mongoose.set("useFindAndModify", false);
-mongoose.set("useCreateIndex", true);
-
-//Conntecting to mongoose database
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test");
-
-var db = mongoose.connection;
-//session config for passport and mongoDB
-const sessionOptions = {
-	secret: "secrete data",
-	resave: true,
-	saveUninitialized: true,
-  store: new MongoStore({ mongooseConnection: db 	})
-};
-
-app.use(session(sessionOptions));
 
 //Initialize Passport.js
 app.use(passport.initialize());
