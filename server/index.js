@@ -17,6 +17,15 @@ const path = require('path')
 const cors = require('cors');
 const app = express();
 
+//set up cors to allows to accept request from the client
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
+
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 function callbackUrl(provider) {
@@ -26,6 +35,7 @@ function callbackUrl(provider) {
     return `http://localhost:5000/${provider}/return`
   }
 }
+
 
 //create or find user
 function generateOrFindUser(accessToken, refreshToken, profile, done) {
@@ -45,16 +55,6 @@ function generateOrFindUser(accessToken, refreshToken, profile, done) {
     done(emailError, null);
   }
 }
-
-//set up cors to allows to accept request from the client
-//TODO: GET THE PORT OF THE REACT APP FROM HEROKU
-app.use(
-  cors({
-    origin: 'https://best-food-recipes.herokuapp.com' ||  "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
-  })
-);
 
 //configure google strategy
 passport.use(new GoogleStrategy({
@@ -125,14 +125,13 @@ app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found
 
 //send message error to the renderer
 app.use( (err, req, res, next) => {
-  console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message,
     error: {}
   });
 });
 
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
   console.log(`express server is listenting on port ${server.address().port} `);
 });
 
