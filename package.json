@@ -28,10 +28,9 @@
   "scripts": {
     "test": "mocha",
     "client-install": "npm install --prefix client",
-    "start": "node ./server/index.js",
+    "start": "concurrently \"node ./server/index.js\" \"cd client && npm run start\"",
     "server":"nodemon ./server/index.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"node ./server/index.js\" \"cd client && npm run start\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client        && npm run build --prefix client"
   },
   "author": "Elmer Gonzalez",
