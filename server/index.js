@@ -112,7 +112,10 @@ app.use('/recipes', recipeRoute);
 //   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
 // }
 // build mode
-app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'client/public/index.html')); })
+app.get('*', function (req, res) {
+  const index = path.join(__dirname, 'build', 'index.html');
+  res.sendFile(index);
+});
 
 //error rout for my app
 // app.get('/error', (req, res) => {
