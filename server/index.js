@@ -17,6 +17,8 @@ const path = require('path')
 const cors = require('cors');
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 //set up cors to allows to accept request from the client
 app.use(
   cors({
@@ -25,8 +27,6 @@ app.use(
     credentials: true
   })
 );
-
-app.use(express.static(path.join(__dirname, 'client/build')));
 
 function callbackUrl(provider) {
   if (app.get("env") === "production") {
@@ -73,8 +73,7 @@ passport.use(new FacebookStrategy({
 }, generateOrFindUser ));
 
 passport.serializeUser( (user, done) => { done(null, user._id); });
-
-passport.deserializeUser( (userId, done) => { User.findById(userId, done); });
+passport.deserializeUser( (userId, done) =>  User.findById(userId, done));
 
 app.set('port', process.env.PORT || 5000);
 
@@ -84,8 +83,12 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.text());
 
+mongoose.set("useNewUrlParser", true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+
 //Conntecting to mongoose database
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test");
 
 var db = mongoose.connection;
 //session config for passport and mongoDB
@@ -103,19 +106,22 @@ app.use(passport.initialize());
 //retore session
 app.use(passport.session());
 
+// Handle database connection error
+db.on("error", err => console.error(`DB Connection Error: ${err}`));
+// On database connection
+db.once("open", () => console.log("DB Connection Successful"));
+
 //main routes
 app.use('/', userRoute);
+app.use('/recipes', recipeRoute);
 
 // production mode
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
-}
+// if(process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, 'client/build')));
+//   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+// }
 // build mode
-app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html')); })
-
-//error rout for my app
-app.get('/error', (req, res) => { res.json({message: "this is the error route"}); });
+app.get("*", (req, res) => { res.sendFile(path.join(__dirname + "/client/build/index.html")); });
 
 //404 route for my app this will render the page
 app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found" }); });
