@@ -27,13 +27,33 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.text());
 
+mongoose.set("useNewUrlParser", true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+
+//Conntecting to mongoose database
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test");
+
+var db = mongoose.connection;
+//session config for passport and mongoDB
+const sessionOptions = {
+	secret: "secrete data",
+	resave: true,
+	saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: db 	})
+};
+
+app.use(session(sessionOptions));
+
+//Initialize Passport.js
+app.use(passport.initialize());
+//retore session
 app.use(passport.session());
-
-
 
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
+
 
 // build mode
 app.get("*", (req, res) => { res.sendFile(path.join(__dirname + "/client/build/index.html")); });
