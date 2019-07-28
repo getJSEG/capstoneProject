@@ -89,35 +89,35 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-te
 
 var db = mongoose.connection;
 // Use sessions for tracking logins
-app.use(session({
-  secret: 'process.env.SESSION_SECRET',
-  resave: true,
-  saveUninitialized: true,
-  store: new MongoStore({ mongooseConnection: db })
-}));
-
-
-//Initialize Passport.js
-app.use(passport.initialize());
-//retore session
-app.use(passport.session());
+// app.use(session({
+//   secret: 'process.env.SESSION_SECRET',
+//   resave: true,
+//   saveUninitialized: true,
+//   store: new MongoStore({ mongooseConnection: db })
+// }));
+//
+//
+// //Initialize Passport.js
+// app.use(passport.initialize());
+// //retore session
+// app.use(passport.session());
 
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
 
 // production mode
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
-}
+// if(process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, 'client/build')));
+//   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+// }
 // build mode
 app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'client/public/index.html')); })
 
 //error rout for my app
-app.get('/error', (req, res) => {
-  res.json({message: "this is the error route"});
-});
+// app.get('/error', (req, res) => {
+//   res.json({message: "this is the error route"});
+// });
 
 //404 route for my app this will render the page
 app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found" }); });
