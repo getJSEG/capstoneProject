@@ -17,6 +17,11 @@ const path = require('path')
 const cors = require('cors');
 const app = express();
 
+const port = process.env.PORT || 5000;
+
+//Static file declaration
+app.use(express.static(path.join(__dirname, 'client/build')))
+
 //set up cors to allows to accept request from the client
 app.use(
   cors({
@@ -26,8 +31,6 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, 'client/build')));
-
 function callbackUrl(provider) {
   if (app.get("env") === "production") {
     return `https://best-food-recipes.herokuapp.com/${provider}/return`;
@@ -35,7 +38,6 @@ function callbackUrl(provider) {
     return `http://localhost:5000/${provider}/return`
   }
 }
-
 
 //create or find user
 function generateOrFindUser(accessToken, refreshToken, profile, done) {
@@ -76,7 +78,7 @@ passport.serializeUser( (user, done) => { done(null, user._id); });
 
 passport.deserializeUser( (userId, done) => { User.findById(userId, done); });
 
-app.set('port', process.env.PORT || 5000);
+// app.set('port', process.env.PORT || 5000);
 
 //get data as json text
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -112,10 +114,20 @@ app.use('/recipes', recipeRoute);
 //   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
 // }
 // build mode
-app.get('*', function (req, res) {
-  const index = path.join(__dirname, 'build', 'index.html');
-  res.sendFile(index);
-});
+
+//production mode
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+}
+
+//build mode
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
+
+// app.get('*', function (req, res) {
+//   const index = path.join(__dirname, 'build', 'index.html');
+//   res.sendFile(index);
+// });
 
 //error rout for my app
 // app.get('/error', (req, res) => {
@@ -133,8 +145,7 @@ app.use( (err, req, res, next) => {
   });
 });
 
-const server = app.listen(app.get('port'), () => {
-  console.log(`express server is listenting on port ${server.address().port} `);
-});
+//start server
+app.listen(port, (req, res) => {  console.log( `server listening on port: ${port}`);})
 
 module.exports = app;
