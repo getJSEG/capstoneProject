@@ -17,8 +17,6 @@ const path = require('path')
 const cors = require('cors');
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'client/build')));
-
 //set up cors to allows to accept request from the client
 app.use(
   cors({
@@ -27,6 +25,8 @@ app.use(
     credentials: true
   })
 );
+
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 function callbackUrl(provider) {
   if (app.get("env") === "production") {
@@ -73,9 +73,28 @@ passport.use(new FacebookStrategy({
 }, generateOrFindUser ));
 
 passport.serializeUser( (user, done) => { done(null, user._id); });
-passport.deserializeUser( (userId, done) =>  User.findById(userId, done));
+
+passport.deserializeUser( (userId, done) => { User.findById(userId, done); });
 
 app.set('port', process.env.PORT || 5000);
+
+//get data as json text
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(bodyParser.text());
+
+//Conntecting to mongoose database
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test", { useNewUrlParser: true });
+
+var db = mongoose.connection;
+// Use sessions for tracking logins
+app.use(session({
+  secret: 'process.env.SESSION_SECRET',
+  resave: true,
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: db })
+}));
 
 
 //Initialize Passport.js
@@ -87,9 +106,18 @@ app.use(passport.session());
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
 
-
+// production mode
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+}
 // build mode
-app.get("*", (req, res) => { res.sendFile(path.join(__dirname + "/client/build/index.html")); });
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'client/public/index.html')); })
+
+//error rout for my app
+app.get('/error', (req, res) => {
+  res.json({message: "this is the error route"});
+});
 
 //404 route for my app this will render the page
 app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found" }); });
