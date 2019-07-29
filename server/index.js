@@ -90,13 +90,13 @@ app.use(bodyParser.text());
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-test", { useNewUrlParser: true });
 
 var db = mongoose.connection;
-// Use sessions for tracking logins
-// app.use(session({
-//   secret: 'process.env.SESSION_SECRET',
-//   resave: true,
-//   saveUninitialized: true,
-//   store: new MongoStore({ mongooseConnection: db })
-// }));
+Use sessions for tracking logins
+app.use(session({
+  secret: 'process.env.SESSION_SECRET',
+  resave: true,
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: db })
+}));
 // //
 // //
 // // //Initialize Passport.js
