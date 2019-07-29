@@ -122,7 +122,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 //build mode
-app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'client/public/index.html'));})
 
 // app.get('*', function (req, res) {
 //   const index = path.join(__dirname, 'build', 'index.html');
