@@ -100,7 +100,7 @@ app.use(session({
 // //
 // //
 // // //Initialize Passport.js
-// app.use(passport.initialize());
+app.use(passport.initialize());
 // // //retore session
 // app.use(passport.session());
 
