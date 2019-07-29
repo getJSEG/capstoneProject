@@ -1,7 +1,8 @@
 require('dotenv').config()
 
-const morgan = require('morgan');
 const express = require('express');
+const app = express();
+const morgan = require('morgan');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -13,14 +14,21 @@ const userRoute = require('./src/userRoute.js');
 const recipeRoute = require('./src/recipesRoute.js');
 const MongoStore = require('connect-mongo')(session);
 const User = require('./src/models/users').User;
-const path = require('path')
+const path = require('path');
 const cors = require('cors');
-const app = express();
-
 const port = process.env.PORT || 5000;
 
 //Static file declaration
 app.use(express.static(path.join(__dirname, 'client/build')))
+
+//production mode
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+}
+
+//build mode
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
 //set up cors to allows to accept request from the client
 app.use(
@@ -91,14 +99,13 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/recipe-te
 
 var db = mongoose.connection;
 // Use sessions for tracking logins
-// app.use(session({
-//   secret: 'process.env.SESSION_SECRET',
-//   resave: true,
-//   saveUninitialized: true,
-//   store: new MongoStore({ mongooseConnection: db })
-// }));
-// //
-// //
+app.use(session({
+  secret: 'process.env.SESSION_SECRET',
+  resave: true,
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: db })
+}));
+
 // // //Initialize Passport.js
 // app.use(passport.initialize());
 // // //retore session
@@ -115,15 +122,6 @@ app.use('/recipes', recipeRoute);
 // }
 // build mode
 
-//production mode
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
-}
-
-//build mode
-app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'client/public/index.html'));})
-
 // app.get('*', function (req, res) {
 //   const index = path.join(__dirname, 'build', 'index.html');
 //   res.sendFile(index);
@@ -139,10 +137,7 @@ app.use((req, res) => { res.status(404).json({ message:"Route Could Not Be Found
 
 //send message error to the renderer
 app.use( (err, req, res, next) => {
-  res.status(err.status || 500).json({
-    message: err.message,
-    error: {}
-  });
+  res.status(err.status || 500).json({ message: err.message, error: {} });
 });
 
 //start server
