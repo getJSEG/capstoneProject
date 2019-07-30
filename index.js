@@ -10,25 +10,24 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const userRoute = require('./src/userRoute.js');
-const recipeRoute = require('./src/recipesRoute.js');
+const userRoute = require('./server/src/userRoute.js');
+const recipeRoute = require('./server/src/recipesRoute.js');
 const MongoStore = require('connect-mongo')(session);
-const User = require('./src/models/users').User;
+const User = require('./server/src/models/users').User;
 const path = require('path');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 
 //Static file declaration
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 //production mode
-if(process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
-}
+// if(process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, 'client/build')));
+//   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+// }
 
-//build mode
-// app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
+
 
 //set up cors to allows to accept request from the client
 app.use(
@@ -114,6 +113,8 @@ app.use(session({
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
+
+app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
 // production mode
 // if(process.env.NODE_ENV === 'production') {
