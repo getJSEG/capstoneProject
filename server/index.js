@@ -10,10 +10,10 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const userRoute = require('./server/src/userRoute.js');
-const recipeRoute = require('./server/src/recipesRoute.js');
+const userRoute = require('./src/userRoute.js');
+const recipeRoute = require('./src/recipesRoute.js');
 const MongoStore = require('connect-mongo')(session);
-const User = require('./server/src/models/users').User;
+const User = require('./src/models/users').User;
 const path = require('path');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
@@ -21,22 +21,6 @@ const port = process.env.PORT || 5000;
 //Static file declaration
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-//production mode
-// if(process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, 'client/build')));
-//   app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
-// }
-
-
-
-//set up cors to allows to accept request from the client
-app.use(
-  cors({
-    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000/",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
-  })
-);
 
 function callbackUrl(provider) {
   if (app.get("env") === "production") {
@@ -113,6 +97,14 @@ app.use(session({
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
+//set up cors to allows to accept request from the client
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
 
 app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
