@@ -21,6 +21,14 @@ const port = process.env.PORT || 5000;
 //Static file declaration
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+//set up cors to allows to accept request from the client
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
 
 function callbackUrl(provider) {
   if (app.get("env") === "production") {
@@ -29,6 +37,7 @@ function callbackUrl(provider) {
     return `http://localhost:5000/${provider}/return`
   }
 }
+
 
 //create or find user
 function generateOrFindUser(accessToken, refreshToken, profile, done) {
@@ -97,14 +106,6 @@ app.use(session({
 //main routes
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
-//set up cors to allows to accept request from the client
-app.use(
-  cors({
-    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true
-  })
-);
 
 app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
