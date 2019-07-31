@@ -98,13 +98,13 @@ app.use(session({
 app.use('/', userRoute);
 app.use('/recipes', recipeRoute);
 //set up cors to allows to accept request from the client
-// app.use(
-//   cors({
-//     origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000",
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     credentials: true
-//   })
-// );
+app.use(
+  cors({
+    origin: 'https://best-food-recipes.herokuapp.com/' || "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true
+  })
+);
 
 app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 
