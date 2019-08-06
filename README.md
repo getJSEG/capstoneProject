@@ -19,21 +19,17 @@ install back-end dependencies
 
 create a env. file with the fallowing variable and replace with valid with valid key's
 ```javascript
- GOOGLE_CLIENT_ID = "Replace with CLIENT_ID";
- GOOGLE_CLIENT_SECRETE = "Replace with CLIENT_SECRETE";
+ GOOGLE_CLIENT_ID = "Replace with CLIENT_ID"
+ GOOGLE_CLIENT_SECRETE = "Replace with CLIENT_SECRETE"
 
- FACEBOOK_CLIENT_ID = "Replace with CLIENT_ID";
- FACEBOOK_CLIENT_SECRETE = "Replace with CLIENT_SECRETE";
+ FACEBOOK_CLIENT_ID = "Replace with CLIENT_ID"
+ FACEBOOK_CLIENT_SECRETE = "Replace with CLIENT_SECRETE"
+ YOUTUBE_API_KEY = "Repalce with YOUTUBE_API_KEY"
 ```
 ## front-end
 install front-end dependencies
 ```javascript
  npm run-script install-cli
-```
-create a config.js file in the src directory of the front end
-```javascript
- const YOUTUBE_API_KEY = "Repalce with YOUTUBE_API_KEY";
- export default YOUTUBE_API_KEY;
 ```
 ## Seed-mongodb
 ```
