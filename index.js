@@ -31,7 +31,11 @@ app.use(
 );
 
 function callbackUrl(provider) {
-  return `https://fast-food-recipes.herokuapp.com/${provider}/return`;
+  if (process.env.NODE_ENV === 'production') {
+    return `https://best-food-recipes.herokuapp.com/${provider}/return`;
+  } else if (app.get("env") === "development") {
+    return `http://localhost:5000/${provider}/return`
+  }
 }
 
 
