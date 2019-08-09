@@ -31,7 +31,7 @@ app.use(
 );
 
 function callbackUrl(provider) {
-  return `https://best-food-recipes.herokuapp.com/${provider}/return`;
+  return `https://fast-food-recipes.herokuapp.com/${provider}/return`;
 }
 
 
