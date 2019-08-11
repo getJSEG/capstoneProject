@@ -16,14 +16,14 @@ router.get('/profile/savedRecipes', user.getSavedRecipes);
 router.get('/login/facebook', passport.authenticate('facebook', {scope: ["email"]}));
 
 //GET /auth/facebook/return
-router.get('/facebook/return', passport.authenticate('facebook', { successRedirect: CLIENT_HOME_PAGE, failureRedirect: '/' })
+router.get('/facebook/return', passport.authenticate('facebook', { successRedirect: process.env.CLIENT_HOME_PAGE, failureRedirect: '/' })
 );
 
 //GET /auth/login/facebook
 router.get('/login/google', passport.authenticate('google', {scope: ["email"] }));
 
 //GET /auth/facebook/return
-router.get('/google/return', passport.authenticate('google', { successRedirect: CLIENT_HOME_PAGE, failureRedirect: '/' }),
+router.get('/google/return', passport.authenticate('google', { successRedirect: process.env.CLIENT_HOME_PAGE, failureRedirect: '/' }),
 );
 
 //GET /auth/logout

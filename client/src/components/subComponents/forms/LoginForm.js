@@ -12,14 +12,14 @@ class LoginForm extends Component {
           </div>
 
   				<div className="login-container">
-  					<a href="http://localhost:5000/login/facebook" className="facebook">
+  					<a href="https://best-food-recipes.herokuapp.com/login/facebook" className="facebook">
   						<i className="fa fa-facebook"></i>
               <span> Facebook </span>
   					</a>
 
             <span> Or </span>
 
-  					<a href="http://localhost:5000/login/google" className="google">
+  					<a href="https://best-food-recipes.herokuapp.com/login/google" className="google">
   						<i className="fa fa-google"></i>
               <span> Google </span>
   					</a>
