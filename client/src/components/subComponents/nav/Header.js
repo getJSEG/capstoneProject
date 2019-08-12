@@ -3,21 +3,16 @@ import { NavLink }  from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import logo from '../../../assets/recipes-logo.png';
-// import Message from '../../other/Message';
 
-//TODo:Make the tottle button on phone screens work
-//TODO: Check if theirs a user from and display login or log out route
-//Todo: fix the navigation bar
 class Header extends Component {
 
   static propTypes = {
       authenticated: PropTypes.bool.isRequired
   };
 
-  // Logout using Twitter passport api
   // Set authenticated state to false in the HomePage component
   handleLogoutClick = () => {
-    window.open("http://localhost:5000/logout", "_self");
+    window.open("https://best-food-recipes.herokuapp.com/logout", "_self");
     this.props.handleAuthentication();
   };
 
