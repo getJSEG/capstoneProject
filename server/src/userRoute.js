@@ -3,7 +3,6 @@ const router = express.Router();
 const passport = require('passport');
 
 const user = require('./routes/user');
-const CLIENT_HOME_PAGE = 'http://localhost:3000';
 
 //user profile
 router.get('/profile', user.profile);

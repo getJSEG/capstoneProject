@@ -1,10 +1,9 @@
 const User = require('../models/users').User;
 const Recipe = require('../models/recipes').Recipe;
-const  CLIENT_HOME_PAGE = 'http://localhost:3000';
 
 function logout(req, res, next){
   req.logout();
-  res.redirect(CLIENT_HOME_PAGE);
+  res.redirect(process.env.CLIENT_HOME_PAGE);
 }
 
 function profile(req, res, next) {
