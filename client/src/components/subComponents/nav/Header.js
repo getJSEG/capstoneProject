@@ -12,7 +12,7 @@ class Header extends Component {
 
   // Set authenticated state to false in the HomePage component
   handleLogoutClick = () => {
-    window.open("https://best-food-recipes.herokuapp.com/logout", "_self");
+    window.open("http://localhost:5000/logout", "_self");
     this.props.handleAuthentication();
   };
 
